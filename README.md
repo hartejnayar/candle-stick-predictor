@@ -102,3 +102,37 @@ candle-stick-predictor/
     ├── test_features.py
     ├── test_dataset.py
     └── test_prediction.py
+```
+## FAQ's
+
+**Q: Why use a Vision Transformer instead of just feeding numerical price data into an LSTM?**
+**A:** Human traders frequently look at chart topography—support/resistance levels, trendline bounces, and candlestick wicks—which are highly spatial. While an LSTM is excellent at processing sequences of numbers, ViTs excel at recognizing spatial geometries across a canvas. Project Apex tests if capturing both numerical and spatial data yields an informational edge.
+
+**Q: Can I run this live with real money?**
+**A:** No. This is a research platform. Passing data from a broker into the prediction engine is technically trivial, but the backtester does not account for order-book depth, latency, or API rate limits. High classification accuracy does not guarantee a profitable equity curve.
+
+**Q: Why is the model predicting NEUTRAL so often?**
+**A:** By design. Markets spend roughly 70% of their time in choppy, non-directional consolidation. The dynamic volatility threshold (e.g., $0.5 \times ATR$) ensures the model only predicts UP or DOWN when the anticipated move is larger than standard market noise.
+
+**Q: Does the model need a GPU to run?**
+**A:** For training, an NVIDIA GPU (CUDA) or Apple Silicon (MPS) is strongly required to handle the Vision Transformer and image datasets. For inference (running the Streamlit dashboard to get predictions on a single stock), a standard CPU is perfectly sufficient.
+
+**Q: How is Project Apex different from standard technical indicators like RSI, MACD, or Moving Averages?**
+
+**A:** Standard technical indicators are fundamentally static mathematical heuristics, whereas Project Apex is a dynamic, multimodal machine learning engine. The differences break down into four key categories:
+
+1. **Deep Neural Learning vs. Fixed Heuristics**
+   * *Standard Indicators:* Rely on rigid, hardcoded formulas invented decades ago (e.g., RSI calculates average gains vs. losses over a fixed $N$ periods). They follow the exact same logic regardless of macroeconomic context or changing market regimes.
+   * *Project Apex:* Uses a Vision Transformer with millions of parameters to automatically *learn* complex, non-linear relationships. It adapts to subtle multi-candle dynamics that human analysts see but simple math equations miss.
+
+2. **Multimodal Spatial Context vs. Isolated Metrics**
+   * *Standard Indicators:* Measure only one specific metric at a time (e.g., momentum, volatility, or trend direction) in complete isolation from the rest of the chart.
+   * *Project Apex:* Mimics how a human quantitative trader actually looks at a screen. It fuses **spatial visual context** (how candlestick shapes, wicks, bodies, and support/resistance geometries *look* visually) with an array of **numerical indicators** simultaneously.
+
+3. **Probabilistic Forecasting vs. Static Thresholds**
+   * *Standard Indicators:* Provide binary or static states without statistical confidence (e.g., "RSI > 70 is overbought"). They cannot quantify the probability of a successful trade.
+   * *Project Apex:* Outputs a calibrated probability distribution across discrete classes (e.g., $P(\text{UP})=73.4\%$, $P(\text{DOWN})=18.1\%$, $P(\text{NEUTRAL})=8.5\%$). This allows for dynamic position sizing based on statistical confidence rather than arbitrary threshold crossings.
+
+4. **Target-Optimized vs. Lagging**
+   * *Standard Indicators:* Inherently lagging. They summarize what the price *has already done* over a past window without explicitly optimizing for a specific future target.
+   * *Project Apex:* Specifically trained via Backpropagation to minimize loss against a **defined forward horizon** (e.g., "Where will the price be exactly 3 trading days from right now?"). It is explicitly forward-looking rather than backward-summarizing.

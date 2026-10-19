@@ -1,0 +1,10 @@
+data:
+  provider: "yfinance"
+  interval: "1d"
+  # Let's use a mix of US and Indian stocks for cross-asset testing later
+  tickers:
+    - "AAPL"
+    - "RELIANCE.NS"
+  start_date: "2018-01-01"
+  end_date: "2023-12-31" # Fixed end date for training reproducibility
+  raw_dir: "data/raw"
